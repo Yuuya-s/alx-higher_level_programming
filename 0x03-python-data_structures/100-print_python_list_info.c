@@ -10,14 +10,20 @@
 void print_python_list_info(PyObject *p)
 {
 	long int size, i;
-	PyListObject *list;
+	Py_ssize_t allocated; // Use Py_ssize_t for compatibility
 	PyObject *item;
 
-	size = Py_SIZE(p);
-	printf("[*] Size of the Python List = %ld\n", size);
+	if (!PyList_Check(p))
+	{
+		fprintf(stderr, "Invalid List Object\n");
+		return;
+	}
 
-	list = (PyListObject *)p;
-	printf("[*] Allocated = %ld\n", list->allocated);
+	size = PyList_Size(p);
+	allocated = ((PyListObject *)p)->allocated;
+
+	printf("[*] Size of the Python List = %ld\n", size);
+	printf("[*] Allocated = %ld\n", allocated);
 
 	for (i = 0; i < size; i++)
 	{
